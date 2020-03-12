@@ -1,0 +1,90 @@
+diff -ur totem-3.34.1.orig/meson_options.txt totem-3.34.1/meson_options.txt
+--- totem-3.34.1.orig/meson_options.txt	2019-10-04 17:59:28.000000000 +0200
++++ totem-3.34.1/meson_options.txt	2020-03-11 17:04:25.104670571 +0100
+@@ -1,4 +1,26 @@
+ option('enable-easy-codec-installation', type: 'combo', choices: ['yes', 'no', 'auto'], value: 'auto', description: 'Whether to enable easy codec installation support for GStreamer')
+ option('enable-python', type: 'combo', choices: ['yes', 'no', 'auto'], value: 'auto', description: 'Enable python support')
+-option('with-plugins', type: 'combo', choices: ['all', 'none', 'auto'], value: 'auto', description: 'Which Totem plugins to compile (default: auto; "all", "none" and "auto" are valid)')
++option('with-plugins', type: 'array', choices: [
++  'all',
++  'auto',
++  'apple-trailers',
++  'autoload-subtitles',
++  'dbusservice',
++  'im-status',
++  'media-player-keys',
++  'opensubtitles',
++  'properties',
++  'pythonconsole',
++  'recent',
++  'rotation',
++  'samplepython',
++  'save-file',
++  'screensaver',
++  'screenshot',
++  'skipto',
++  'variable-rate',
++  'vimeo',
++], value: ['auto'], description: 'Which Totem plugins to compile (default: auto; "all", "none" and "auto" are valid)')
++option('gst-inspect', type: 'boolean', value: true, description: 'build-time test of available gstreamer plugins')
+ option('enable-gtk-doc', type: 'boolean', value: false, description: 'use gtk-doc to build documentation')
++
+diff -ur totem-3.34.1.orig/src/backend/meson.build totem-3.34.1/src/backend/meson.build
+--- totem-3.34.1.orig/src/backend/meson.build	2019-10-04 17:59:28.000000000 +0200
++++ totem-3.34.1/src/backend/meson.build	2020-03-11 17:10:09.901161682 +0100
+@@ -1,5 +1,6 @@
+ backend_inc = include_directories('.')
+ 
++if get_option('gst-inspect')
+ gst_inspect = find_program(
+   'gst-inspect-1.0',
+   join_paths(gst_dep.get_pkgconfig_variable('toolsdir'), 'gst-inspect-1.0'),
+@@ -31,6 +32,7 @@
+   assert(r.returncode() == 0,
+          'Cannot find required GStreamer-1.0 plugin "' + plugin + '". It should be part of gst-plugins-good. Please install it.')
+ endforeach
++endif
+ 
+ sources = files(
+   'bacon-time-label.c',
+diff -ur totem-3.34.1.orig/src/plugins/meson.build totem-3.34.1/src/plugins/meson.build
+--- totem-3.34.1.orig/src/plugins/meson.build	2019-10-04 17:59:28.000000000 +0200
++++ totem-3.34.1/src/plugins/meson.build	2020-03-11 16:57:05.003633790 +0100
+@@ -36,9 +36,8 @@
+ plugins = []
+ 
+ plugins_option = get_option('with-plugins')
+-if plugins_option != 'none'
+-  plugins += [
+-    'apple-trailers',
++if plugins_option.length() > 0
++  foreach plugin: [    'apple-trailers',
+     'autoload-subtitles',
+     'im-status',
+     'media-player-keys',
+@@ -53,16 +52,24 @@
+     'variable-rate',
+     'vimeo'
+   ]
++    if plugins_option.contains('all') or plugins_option.contains('auto') or plugins_option.contains(plugin)
++      plugins += plugin
++    endif
++  endforeach
+ 
+   plugin_error = (plugins_option == 'all')
+ 
+   if have_python
+-    plugins += [
++    foreach plugin: [
+       'dbusservice',
+       'opensubtitles',
+       'pythonconsole',
+       'samplepython'
+     ]
++      if plugins_option.contains('all') or plugins_option.contains('auto') or plugins_option.contains(plugin)
++        plugins += plugin
++      endif
++    endforeach
+   endif
+ endif
+ 
