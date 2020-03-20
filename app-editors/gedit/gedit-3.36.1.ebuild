@@ -14,8 +14,7 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Gedit"
 LICENSE="GPL-2+ CC-BY-SA-3.0"
 SLOT="0"
 
-IUSE="+introspection +python gtk-doc vala"
-REQUIRED_USE="python? ( introspection ${PYTHON_REQUIRED_USE} ) ( python )"
+IUSE="+introspection vala gtk-doc"
 
 KEYWORDS="~alpha amd64 ~arm ~arm64 ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc x86 ~amd64-linux ~x86-linux"
 
@@ -31,14 +30,12 @@ DEPEND="
 
 	>=app-text/gspell-0.2.5:0=
 	introspection? ( >=dev-libs/gobject-introspection-1.54:= )
-	python? (
-		${PYTHON_DEPS}
-		$(python_gen_cond_dep '
-			dev-python/pycairo[${PYTHON_MULTI_USEDEP}]
-			>=dev-python/pygobject-3:3[cairo,${PYTHON_MULTI_USEDEP}]
-			dev-libs/libpeas[python,${PYTHON_SINGLE_USEDEP}]
-		')
-	)
+	${PYTHON_DEPS}
+	$(python_gen_cond_dep '
+		dev-python/pycairo[${PYTHON_MULTI_USEDEP}]
+		>=dev-python/pygobject-3:3[cairo,${PYTHON_MULTI_USEDEP}]
+		dev-libs/libpeas[python,${PYTHON_SINGLE_USEDEP}]
+	')
 "
 RDEPEND="${DEPEND}
 	x11-themes/adwaita-icon-theme
@@ -55,12 +52,9 @@ BDEPEND="
 	>=sys-devel/gettext-0.18
 	virtual/pkgconfig
 "
-PATCHES=(
-	#"${FILESDIR}"/${PV}-fix-parallel-build.patch # parallel build failure fix, included in 3.34
-)
 
 pkg_setup() {
-	use python && python-single-r1_pkg_setup
+	python-single-r1_pkg_setup
 }
 
 src_prepare() {
@@ -72,9 +66,7 @@ src_configure() {
 	local emesonargs=(
 		$(meson_use introspection)
 		$(meson_use vala vapi)
-		$(meson_use python plugins)
-		$(meson_use gtk-doc documentation)
-		-Denable-gvfs-metadata=yes
+		$(meson_use gtk-doc gtk_doc)
 	)
 	meson_src_configure
 }
@@ -84,10 +76,8 @@ src_test() { :; }
 
 src_install() {
 	meson_src_install
-	if use python; then
-		python_optimize
-		python_optimize "${ED}/usr/$(get_libdir)/gedit/plugins/"
-	fi
+	python_optimize
+	python_optimize "${ED}/usr/$(get_libdir)/gedit/plugins/"
 }
 
 pkg_postinst() {
