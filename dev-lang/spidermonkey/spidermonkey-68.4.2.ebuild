@@ -3,7 +3,7 @@
 
 EAPI=6
 WANT_AUTOCONF="2.1"
-inherit autotools check-reqs toolchain-funcs pax-utils mozcoreconf-v5
+inherit autotools check-reqs toolchain-funcs pax-utils mozcoreconf-v5 multilib-minimal
 
 MY_PN="mozjs"
 MY_P="${MY_PN}-${PV/_rc/.rc}"
@@ -26,12 +26,15 @@ BUILDDIR="${S}/jsobj"
 
 RDEPEND=">=dev-libs/nspr-4.13.1
 	virtual/libffi
-	dev-lang/rust
 	sys-devel/clang
 	sys-libs/readline:0=
 	>=sys-libs/zlib-1.2.3:=
 	system-icu? ( >=dev-libs/icu-59.1:= )"
-DEPEND="${RDEPEND}"
+DEPEND="${RDEPEND}
+	|| (
+		>=dev-lang/rust-1.39.0[${MULTILIB_USEDEP}]
+		( >=dev-lang/rust-bin-1.39.0[${MULTILIB_USEDEP}] >=dev-lang/rust-std-bin-1.39.0[${MULTILIB_USEDEP}] )
+	)"
 
 pkg_pretend() {
 	CHECKREQS_DISK_BUILD="2G"
