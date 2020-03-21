@@ -15,6 +15,7 @@ package.accept_keywords:
 	=dev-util/gdbus-codegen-2.62.5 ~amd64
 	=dev-libs/glib-2.62.5 ~amd64
 	=gnome-extra/gnome-weather-3.34.0 ~amd64
+	=app-crypt/libsecret-0.20.1 ~amd64
 
 package.use:
 
