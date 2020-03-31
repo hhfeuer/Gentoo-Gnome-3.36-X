@@ -1,0 +1,15 @@
+diff -ur mutter-3.36.1.orig/src/backends/x11/meta-input-device-x11.c mutter-3.36.1/src/backends/x11/meta-input-device-x11.c
+--- mutter-3.36.1.orig/src/backends/x11/meta-input-device-x11.c	2020-03-30 21:29:39.287885000 +0200
++++ mutter-3.36.1/src/backends/x11/meta-input-device-x11.c	2020-03-31 10:48:09.029214659 +0200
+@@ -127,10 +127,9 @@
+ 
+   if (device_xi2->group_modes)
+     g_array_unref (device_xi2->group_modes);
+-#endif
+ 
+   g_clear_handle_id (&device_xi2->inhibit_pointer_query_timer, g_source_remove);
+-
++#endif
+   G_OBJECT_CLASS (meta_input_device_x11_parent_class)->finalize (object);
+ }
+ 
