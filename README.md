@@ -5,6 +5,10 @@ Needs
 -----
 package.accept_keywords:
 
+	=app-misc/tracker-2.3.4 ~amd64
+	=app-misc/tracker-miners-2.3.3 ~amd64
+	=media-libs/grilo-0.3.12 ~amd64
+	=media-plugins/grilo-plugins-0.3.11 ~amd64
 	=dev-libs/totem-pl-parser-3.26.5 ~amd64
 	=media-video/cheese-3.34.0-r1 ~amd64
 	=media-gfx/gnome-font-viewer-3.34.0 ~amd64
