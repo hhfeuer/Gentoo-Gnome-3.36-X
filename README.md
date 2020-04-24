@@ -5,6 +5,7 @@ Needs
 -----
 package.accept_keywords:
 
+	<net-libs/webkit-gtk-2.29 ~amd64
 	=app-misc/tracker-2.3.4 ~amd64
 	=app-misc/tracker-miners-2.3.3 ~amd64
 	=media-libs/grilo-0.3.12 ~amd64
