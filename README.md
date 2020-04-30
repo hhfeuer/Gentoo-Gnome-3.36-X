@@ -30,3 +30,7 @@ package.use:
 	>=net-libs/gnome-online-accounts-3.26.2 vala
 	>=gui-libs/libhandy-0.0.9 vala
 
+package.unmask:
+
+	=dev-libs/gjs-1.64.0
+	
